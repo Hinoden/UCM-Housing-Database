@@ -2,6 +2,8 @@
 By Jeffrey Peng and Kristina Wong
 
 Tables:
+  - assets
+  
 - building
   - buildingId
   - name
