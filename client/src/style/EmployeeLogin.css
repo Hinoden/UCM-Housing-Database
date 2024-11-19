@@ -1,0 +1,71 @@
+.EmpLoginContainer {
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 415px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+}
+
+#goBackEmpContainer {
+    display: flex;
+}
+
+#empLogin {
+    margin-top: 30px;
+}
+
+#empHeader {
+    font-size: 60px;
+    color: rgb(0, 40, 86);
+}
+
+#empUsernameLabel {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    margin-top: -20px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#empPasswordLabel {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#username {
+    position: relative;
+    height: 5px;
+    width: 390px;
+}
+
+#password {
+    position: relative;
+    height: 5px;
+    width: 390px;
+}
+
+#whoopsEmp {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    margin-top: 160px;
+    left: 33%;
+    text-align: left;
+}
+
+#goBackEmp {
+    margin-top: 143px;
+    left: 33%;
+    color:rgb(218, 169, 0)
+}
