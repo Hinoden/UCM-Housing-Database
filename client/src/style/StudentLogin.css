@@ -1,0 +1,130 @@
+.LoginContainer {
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 415px;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+}
+
+.SignUpContainer {
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+}
+
+#goBackStuContainer {
+    display: flex;
+}
+
+#stuLogin {
+    margin-top: 30px;
+}
+
+#stuSignUp {
+    margin-top: 30px;
+}
+
+#stuHeader {
+    font-size: 60px;
+    color: rgb(0, 40, 86);
+}
+
+#stuNameLabel {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    margin-top: -20px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#stuUsernameLabel {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    margin-top: -20px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#stuUsername1Label {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#stuPasswordLabel {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#stuPassword1Label {
+    position: relative;
+    font-weight: bold;
+    color: rgb(0, 40, 86);
+    text-align: left;
+    margin-left: 40px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+#fullName {
+    position: relative;
+    height: 5px;
+    width: 390px;
+}
+
+#username {
+    position: relative;
+    height: 5px;
+    width: 390px;
+}
+
+#password {
+    position: relative;
+    height: 5px;
+    width: 390px;
+}
+
+#orStudent {
+    margin-top: 170px;
+    font-weight: bold;
+    font-size: 40px;
+    color: rgb(218, 169, 0);
+}
+
+#whoopsStu {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    margin-top: 160px;
+    left: 8%;
+    text-align: left;
+}
+
+#goBackStu {
+    margin-top: 143px;
+    left: 8%;
+    color:rgb(218, 169, 0)
+}
