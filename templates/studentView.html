@@ -4,18 +4,16 @@
     <meta charset="UTF=8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student View</title>
-    <style>
-
-    </style>
 </head>
 <body>
     <div>
-        <div id = "navbar">
-            <p id = "welcome">Welcome</p>
+        <div id="navbar">
+            <p id="welcome">Welcome {{ session.student_name }}</p> <!-- Display student name -->
             <button id="form" onclick="window.location.href='/studentView/form'">Housing Form</button>
         </div>
-        <div id = "main">
-            <h1>Your housing status: </h1>
+        <div id="main">
+            <h1>Your housing status:</h1>
+            <p>{{ housing_status }}</p>
         </div>
     </div>
 </body>

@@ -23,8 +23,15 @@ def open_connection():
 @app.route("/")
 def home():
     return render_template('welcome.html')
+@app.route("/employee/view", endpoint='employee_view')  # Explicitly define endpoint
+def employee_view():
+    return render_template("employeeView.html")
+@app.route('/studentView/form')
+def studentView():
+    return render_template('housingForm.html')
+    
 
-# Student login route
+
 @app.route("/login/student", methods=['GET', 'POST'])
 def student_login():
     if request.method == 'POST':
@@ -42,12 +49,13 @@ def student_login():
 
             if user:
                 # Set session variables upon successful login
-                session['student_id'] = user[0]  # Assuming the first column is customer ID
+                session['student_id'] = user[0]  # Assuming the first column is student ID
                 session['student_name'] = user[1]
-                session['student_email'] = user[4]  # Assuming the email is in the third column
+                session['student_email'] = user[4]  # Assuming the email is in the fifth column
                 print(f'Login successful')
-                return render_template('studentView.html')
-                # return redirect(url_for('studentView'))  # Redirect to student view page
+
+                # Redirect to the student dashboard view after successful login
+                return redirect(url_for('student_dash'))  # Use redirect to go to the student dashboard
             else:
                 flash("Invalid email or password", "error")  # Flash error message if login fails
         else:
@@ -55,8 +63,62 @@ def student_login():
 
     return render_template('studentLogin.html')  # Render login template on GET request
 
+
+@app.route('/studentView')
+def student_dash():
+    # Retrieve session data
+    student_email = session.get("student_email")
+    student_ID = session.get("student_id")
+
+    # Debugging: Check if session variables are correctly set
+    print(f"Student Email: {student_email}, Student ID: {student_ID}")
+
+    if not student_email or not student_ID:
+        flash("You need to be logged in to access this page", "error")
+        return redirect(url_for('student_login'))
+
+    # Open database connection
+    conn = open_connection()
+    if conn:
+        cursor = conn.cursor()
+
+        # Check if the student has already submitted the housing form
+        sql_check = """
+            SELECT * FROM housingForm
+            WHERE f_studentID = ?
+        """
+        cursor.execute(sql_check, (student_ID,))
+        existing_form = cursor.fetchone()
+        
+        if existing_form:
+            # Query to fetch the f_status for the given student
+            sql_housing_check = """
+                SELECT f_status FROM housingForm
+                WHERE f_studentID = ?
+            """
+            cursor.execute(sql_housing_check, (student_ID,))
+            status = cursor.fetchone()
+            stat = status[0]
+            if stat == 'F':
+                housing_status = "You have submitted your housing form, and it is still being processed."
+            else:
+                housing_status = "You have submitted your housing form and it has been approved."
+        else:
+            housing_status = "You have not yet submitted your housing form."
+
+        conn.close()
+
+        # Render the student view template with the housing status
+        return render_template('studentView.html', housing_status=housing_status)
+
+    else:
+        flash("Error connecting to the database", "error")
+        return redirect(url_for('student_login'))
+
+
 @app.route("/signup/student", methods=['GET', 'POST'])
 def student_signup():
+
     if request.method == 'POST':
         student_name = request.form.get('student_name')
         student_gender = request.form.get('gender')
@@ -106,12 +168,6 @@ def student_signup():
 
     return render_template('studentSignup.html')  # Render signup page on GET request
 
-@app.route('/studentView/form')
-def studentView():
-    return render_template('housingForm.html')
-    
-
-# Employee login route
 @app.route("/login/employee", methods=['GET', 'POST'])
 def employee_login():
     if request.method == 'POST':
@@ -133,13 +189,15 @@ def employee_login():
                 session['employee_name'] = user[1]
                 session['employee_email'] = user[2]  # Assuming the email is in the third column
                 print(f'Login successful')
-                return redirect(url_for('employeeView'))  # Redirect to the employee view page
+
+                # Redirect to the employee view page
+                return redirect(url_for('employee_view'))  # This should match the route function name 'employee_view'
             else:
                 flash("Invalid email or password", "error")  # Flash error message if login fails
         else:
             flash("Error connecting to database", "error")
-
-    return render_template('employeeLogin.html')  # Render login template on GET request
+    
+    return render_template("employeeLogin.html")
 
 @app.route("/studentView/form", methods=['GET', 'POST'])
 def submitForm():
@@ -214,12 +272,6 @@ def submitForm():
     else:
         flash("Error connecting to the database", "error")
         return redirect(url_for('studentView'))
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
