@@ -45,7 +45,8 @@ def student_login():
                 session['student_id'] = user[0]  # Assuming the first column is customer ID
                 session['student_email'] = user[2]  # Assuming the email is in the third column
                 print(f'Login successful')
-                return redirect(url_for('studentView'))  # Redirect to student view page
+                return render_template('studentView.html')
+                # return redirect(url_for('studentView'))  # Redirect to student view page
             else:
                 flash("Invalid email or password", "error")  # Flash error message if login fails
         else:
@@ -107,7 +108,10 @@ def student_signup():
 
     return render_template('studentSignup.html')  # Render signup page on GET request
 
-
+@app.route('/studentView/form')
+def studentView():
+    return render_template('housingForm.html')
+    
 
 # Employee login route
 @app.route("/login/employee", methods=['GET', 'POST'])
