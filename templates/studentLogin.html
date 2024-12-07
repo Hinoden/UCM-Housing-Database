@@ -100,47 +100,6 @@
             font-size: 14px;
         }
     </style>
-
-    <!-- Axios Library -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <script>
-        // Handle Login
-        function handleLogin() {
-            const loginData = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
-            };
-
-            axios.post('http://localhost:3500/api/login', loginData)
-                .then(response => {
-                    alert(response.data.message); // Success message
-                    window.location.href = '/dashboard'; // Navigate on successful login
-                })
-                .catch(error => {
-                    document.getElementById('loginError').innerText = error.response ? error.response.data.message : 'Error connecting to server';
-                });
-        }
-
-        // Handle Sign Up
-        function handleSignup() {
-            const signupData = {
-                fullName: document.getElementById('fullName').value,
-                username: document.getElementById('username1').value,
-                password: document.getElementById('password1').value
-            };
-
-            axios.post('http://localhost:3500/api/signup', signupData)
-                .then(response => {
-                    document.getElementById('signupSuccess').innerText = response.data.message;
-                    document.getElementById('signupError').innerText = '';
-                })
-                .catch(error => {
-                    document.getElementById('signupSuccess').innerText = '';
-                    document.getElementById('signupError').innerText = error.response ? error.response.data.message : 'Error connecting to server';
-                });
-        }
-    </script>
 </head>
 
 <body>
@@ -152,13 +111,27 @@
 
     <!-- Login Section -->
     <div class="LoginContainer">
-        <h1 id="stuHeader">Student Portal</h1>
-        <p id="stuUsernameLabel">UCMNetID or M.ID (Required)</p>
-        <input id="username" type="text" required placeholder="Enter your UCMNetID or M.ID" />
-        <p id="stuPasswordLabel">Password (Required)</p>
-        <input id="password" type="password" required placeholder="Enter your password" />
-        <button id="stuLogin" onclick="handleLogin()">Sign In</button>
-        <p id="loginError" class="error-message"></p>
+        <form method="POST" action="/login/student">
+            <h1 id="stuHeader">Student Portal</h1>
+            <p id="stuUsernameLabel">UCM Email (Required)</p>
+            <input id="username" name="student_email" type="text" required placeholder="Enter your UCMNetID or M.ID" />
+            <p id="stuPasswordLabel">Password (Required)</p>
+            <input id="password" name="student_password" type="password" required placeholder="Enter your password" />
+            <button type="submit" id="stuLogin">Sign In</button>
+            <p id="loginError" class="error-message"></p>
+        </form>
+        <!-- Display flash messages here -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+    </div>
     </div>
 
     <p id="orStudent">OR</p>
