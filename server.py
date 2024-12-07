@@ -30,6 +30,11 @@ def employee_view():
 def studentView():
     return render_template('housingForm.html')
     
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You have been logged out.", "success")
+    return redirect(url_for('home'))
 
 
 @app.route("/login/student", methods=['GET', 'POST'])
