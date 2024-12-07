@@ -89,39 +89,32 @@
         <!-- Go Back Section -->
         <div id="goBackEmpContainer">
             <p id="whoopsEmp">Not an Employee?</p>
-            <button id="goBackEmp" onclick="goBackClick()">Go Back</button>
+            <button id="goBackEmp" onclick="window.location.href='/'">Go Back</button>
         </div>
 
         <!-- Login Section -->
         <div class="EmpLoginContainer">
-            <h1 id="empHeader">Employee Portal</h1>
-            <p id="empUsernameLabel">Email (Required)</p>
-            <input id="username" type="email" required/>
-            <p id="empPasswordLabel">Password (Required)</p>
-            <input id="password" type="password" required/>
-            <button id="empLogin" onclick="handleLogin()">Sign In</button>
+            <form method="POST" action="/login/employee">
+                <h1 id="empHeader">Employee Portal</h1>
+                <p id="empUsernameLabel">Email (Required)</p>
+                <input id="username" name="employee_email" type="email" required />
+                <p id="empPasswordLabel">Password (Required)</p>
+                <input id="password" name="employee_password" type="password" required />
+                <button id="empLogin" type="submit">Sign In</button>
+            </form>
+        
+            <!-- Display flash messages here -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="flash {{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
         </div>
-    </div>
-
-    <script>
-        // Go back button handler
-        function goBackClick() {
-            window.location.href = "/";  // Replace with the appropriate URL for the main page
-        }
-
-        // Login button handler
-        function handleLogin() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            if (username && password) {
-                // Add logic for authentication if needed (e.g., API request)
-                alert("Logged in successfully");
-            } else {
-                alert("Please enter both username and password.");
-            }
-        }
-    </script>
+        </div>
 
 </body>
 </html>

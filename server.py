@@ -42,8 +42,8 @@ def student_login():
 
             if user:
                 # Set session variables upon successful login
-                session['customer_id'] = user[0]  # Assuming the first column is customer ID
-                session['email'] = user[2]  # Assuming the email is in the third column
+                session['student_id'] = user[0]  # Assuming the first column is customer ID
+                session['student_email'] = user[2]  # Assuming the email is in the third column
                 print(f'Login successful')
                 return redirect(url_for('studentView'))  # Redirect to student view page
             else:
@@ -54,11 +54,34 @@ def student_login():
     return render_template('studentLogin.html')  # Render login template on GET request
 
 # Employee login route
-@app.route("/login/employee")
+@app.route("/login/employee", methods=['GET', 'POST'])
 def employee_login():
-    return render_template('employeeLogin.html')
+    if request.method == 'POST':
+        employee_email = request.form.get('employee_email')
+        employee_password = request.form.get('employee_password')
+        print(f"Login Attempt: With {employee_email} and {employee_password}")
 
-# You can add other routes here if necessary
+        conn = open_connection()
+        if conn:
+            cursor = conn.cursor()
+            sql = "SELECT * FROM employee WHERE e_email = ? AND e_password = ?"
+            cursor.execute(sql, (employee_email, employee_password))
+            user = cursor.fetchone()
+            conn.close()
+
+            if user:
+                # Set session variables upon successful login
+                session['employee_id'] = user[0]  # Assuming the first column is employee ID
+                session['employee_email'] = user[2]  # Assuming the email is in the third column
+                print(f'Login successful')
+                return redirect(url_for('employeeView'))  # Redirect to the employee view page
+            else:
+                flash("Invalid email or password", "error")  # Flash error message if login fails
+        else:
+            flash("Error connecting to database", "error")
+
+    return render_template('employeeLogin.html')  # Render login template on GET request
+
 
 if __name__ == "__main__":
     app.run(debug=True)
