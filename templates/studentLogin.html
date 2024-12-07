@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+
+    <!-- Internal CSS -->
+    <style>
+        body {
+            background-color: rgb(0, 40, 86);
+            font-family: sans-serif;
+        }
+
+        .LoginContainer, .SignUpContainer {
+            position: absolute;
+            background-color: white;
+            width: 500px;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .LoginContainer {
+            top: 50%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+        }
+
+        .SignUpContainer {
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+        }
+
+        #goBackStuContainer {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #stuLogin, #stuSignUp {
+            margin-top: 30px;
+            background-color: rgb(0, 40, 86);
+            color: white;
+        }
+
+        #stuHeader {
+            font-size: 60px;
+            color: rgb(0, 40, 86);
+            text-align: center;
+        }
+
+        #stuUsernameLabel, #stuPasswordLabel, #stuNameLabel {
+            font-weight: bold;
+            color: rgb(0, 40, 86);
+            text-align: left;
+            font-size: 14px;
+        }
+
+        input {
+            width: 390px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgb(0, 40, 86);
+            border-radius: 4px;
+        }
+
+        #orStudent {
+            margin-top: 170px;
+            font-weight: bold;
+            font-size: 40px;
+            color: rgb(218, 169, 0);
+            text-align: center;
+        }
+
+        #whoopsStu {
+            color: white;
+            font-size: 20px;
+            margin-top: 160px;
+            text-align: left;
+            margin-left: 8%;
+        }
+
+        #goBackStu {
+            color: rgb(218, 169, 0);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+        }
+    </style>
+
+    <!-- Axios Library -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        // Handle Login
+        function handleLogin() {
+            const loginData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            axios.post('http://localhost:3500/api/login', loginData)
+                .then(response => {
+                    alert(response.data.message); // Success message
+                    window.location.href = '/dashboard'; // Navigate on successful login
+                })
+                .catch(error => {
+                    document.getElementById('loginError').innerText = error.response ? error.response.data.message : 'Error connecting to server';
+                });
+        }
+
+        // Handle Sign Up
+        function handleSignup() {
+            const signupData = {
+                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username1').value,
+                password: document.getElementById('password1').value
+            };
+
+            axios.post('http://localhost:3500/api/signup', signupData)
+                .then(response => {
+                    document.getElementById('signupSuccess').innerText = response.data.message;
+                    document.getElementById('signupError').innerText = '';
+                })
+                .catch(error => {
+                    document.getElementById('signupSuccess').innerText = '';
+                    document.getElementById('signupError').innerText = error.response ? error.response.data.message : 'Error connecting to server';
+                });
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Go Back Button -->
+    <div id="goBackStuContainer">
+        <p id="whoopsStu">Not a Student?</p>
+        <button id="goBackStu" onclick="window.location.href='/'">Go Back</button>
+    </div>
+
+    <!-- Login Section -->
+    <div class="LoginContainer">
+        <h1 id="stuHeader">Student Portal</h1>
+        <p id="stuUsernameLabel">UCMNetID or M.ID (Required)</p>
+        <input id="username" type="text" required placeholder="Enter your UCMNetID or M.ID" />
+        <p id="stuPasswordLabel">Password (Required)</p>
+        <input id="password" type="password" required placeholder="Enter your password" />
+        <button id="stuLogin" onclick="handleLogin()">Sign In</button>
+        <p id="loginError" class="error-message"></p>
+    </div>
+
+    <p id="orStudent">OR</p>
+
+    <!-- Sign Up Section -->
+    <div class="SignUpContainer">
+        <h1 id="stuHeader">Sign Up</h1>
+        <p id="stuNameLabel">Full Name (Required)</p>
+        <input id="fullName" type="text" required placeholder="Enter your full name" />
+        <p id="stuUsername1Label">UCMNetID or M.ID (Required)</p>
+        <input id="username1" type="text" required placeholder="Enter your UCMNetID or M.ID" />
+        <p id="stuPassword1Label">Password (Required)</p>
+        <input id="password1" type="password" required placeholder="Enter your password" />
+        <button id="stuSignUp" onclick="handleSignup()">Sign Up</button>
+        <p id="signupError" class="error-message"></p>
+        <p id="signupSuccess" class="success-message"></p>
+    </div>
+</body>
+
+</html>

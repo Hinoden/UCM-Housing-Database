@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Login</title>
+    <style>
+        body {
+            background-color: rgb(0, 40, 86);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .EmpLoginContainer {
+            position: absolute;
+            background-color: white;
+            width: 500px;
+            height: 415px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        #goBackEmpContainer {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #empLogin {
+            margin-top: 30px;
+        }
+
+        #empHeader {
+            font-size: 60px;
+            color: rgb(0, 40, 86);
+            text-align: center;
+        }
+
+        #empUsernameLabel,
+        #empPasswordLabel {
+            font-weight: bold;
+            color: rgb(0, 40, 86);
+            text-align: left;
+            margin-left: 40px;
+            margin-top: -20px;
+            font-size: 14px;
+        }
+
+        #username, #password {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        #whoopsEmp {
+            color: white;
+            font-size: 20px;
+            margin-top: 160px;
+            left: 33%;
+            text-align: left;
+        }
+
+        #goBackEmp {
+            color: rgb(218, 169, 0);
+            margin-top: 143px;
+            left: 33%;
+        }
+
+        .MuiButton-root {
+            background-color: rgb(0, 40, 86);
+            color: white;
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .MuiButton-root:hover {
+            background-color: rgb(218, 169, 0);
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <!-- Go Back Section -->
+        <div id="goBackEmpContainer">
+            <p id="whoopsEmp">Not an Employee?</p>
+            <button id="goBackEmp" onclick="goBackClick()">Go Back</button>
+        </div>
+
+        <!-- Login Section -->
+        <div class="EmpLoginContainer">
+            <h1 id="empHeader">Employee Portal</h1>
+            <p id="empUsernameLabel">Email (Required)</p>
+            <input id="username" type="email" required/>
+            <p id="empPasswordLabel">Password (Required)</p>
+            <input id="password" type="password" required/>
+            <button id="empLogin" onclick="handleLogin()">Sign In</button>
+        </div>
+    </div>
+
+    <script>
+        // Go back button handler
+        function goBackClick() {
+            window.location.href = "/";  // Replace with the appropriate URL for the main page
+        }
+
+        // Login button handler
+        function handleLogin() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username && password) {
+                // Add logic for authentication if needed (e.g., API request)
+                alert("Logged in successfully");
+            } else {
+                alert("Please enter both username and password.");
+            }
+        }
+    </script>
+
+</body>
+</html>
