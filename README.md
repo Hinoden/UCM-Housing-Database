@@ -1,9 +1,11 @@
 # UC Merced/Fall2024/CSE111-Project
-By Jeffrey Peng and Kristina Wong
-Operating using Flask
-To run: python server.py 
+## By Jeffrey Peng and Kristina Wong
 
-Tables:
+### Operating using Flask
+
+### To run: python server.py 
+
+### DB Tables and columns: 
   - assets
   
 - building
