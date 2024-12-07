@@ -53,6 +53,62 @@ def student_login():
 
     return render_template('studentLogin.html')  # Render login template on GET request
 
+@app.route("/signup/student", methods=['GET', 'POST'])
+def student_signup():
+    if request.method == 'POST':
+        student_name = request.form.get('student_name')
+        student_gender = request.form.get('gender')
+        student_email = request.form.get('student_email')
+        student_password = request.form.get('student_password')
+        student_year = request.form.get('student_year')
+
+        print(f"Sign Up Attempt: {student_name}, {student_gender}, {student_email}, {student_password}, {student_year}")
+
+        # Open connection to the database
+        conn = open_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+
+                # Check if the student already exists (based on email)
+                sql_check = "SELECT * FROM student WHERE s_email = ?"
+                cursor.execute(sql_check, (student_email,))
+                existing_user = cursor.fetchone()
+
+                if existing_user:
+                    flash("This email is already registered. Please login.", "error")
+                else:
+                    # Fetch the current max s_studentID and increment it
+                    sql_max_id = "SELECT MAX(s_studentID) FROM student"
+                    cursor.execute(sql_max_id)
+                    max_id = cursor.fetchone()[0]
+                    new_student_id = max_id + 1 if max_id is not None else 1  # Default to 1 if no student exists
+
+                    # Insert new student with manually incremented s_studentID
+                    sql_insert = """
+                        INSERT INTO student (s_studentID, s_name, s_gender, s_year, s_email, s_password, s_buildingID, s_roomID)
+                        VALUES (?, ?, ?, ?, ?, ?, 0, 0)
+                    """
+                    cursor.execute(sql_insert, (new_student_id, student_name, student_gender, student_year, student_email, student_password))
+                    conn.commit()
+                    flash("Sign-up successful! You can now log in.", "success")
+                    return redirect(url_for('student_login'))  # Redirect back to the student login page
+
+            except sqlite3.OperationalError as e:
+                print(f"Database error: {e}")
+                flash("There was an issue with the database. Please try again later.", "error")
+
+            finally:
+                # Ensure the connection is closed after the operation
+                conn.close()
+
+    return render_template('studentSignup.html')  # Render signup page on GET request
+
+
+    return render_template('studentSignup.html')  # Render signup page on GET request
+
+
+
 # Employee login route
 @app.route("/login/employee", methods=['GET', 'POST'])
 def employee_login():
