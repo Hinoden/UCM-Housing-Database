@@ -43,7 +43,8 @@ def student_login():
             if user:
                 # Set session variables upon successful login
                 session['student_id'] = user[0]  # Assuming the first column is customer ID
-                session['student_email'] = user[2]  # Assuming the email is in the third column
+                session['student_name'] = user[1]
+                session['student_email'] = user[4]  # Assuming the email is in the third column
                 print(f'Login successful')
                 return render_template('studentView.html')
                 # return redirect(url_for('studentView'))  # Redirect to student view page
@@ -105,9 +106,6 @@ def student_signup():
 
     return render_template('studentSignup.html')  # Render signup page on GET request
 
-
-    return render_template('studentSignup.html')  # Render signup page on GET request
-
 @app.route('/studentView/form')
 def studentView():
     return render_template('housingForm.html')
@@ -132,6 +130,7 @@ def employee_login():
             if user:
                 # Set session variables upon successful login
                 session['employee_id'] = user[0]  # Assuming the first column is employee ID
+                session['employee_name'] = user[1]
                 session['employee_email'] = user[2]  # Assuming the email is in the third column
                 print(f'Login successful')
                 return redirect(url_for('employeeView'))  # Redirect to the employee view page
@@ -141,6 +140,85 @@ def employee_login():
             flash("Error connecting to database", "error")
 
     return render_template('employeeLogin.html')  # Render login template on GET request
+
+@app.route("/studentView/form", methods=['GET', 'POST'])
+def submitForm():
+    # Retrieve session data
+    student_email = session.get("student_email")
+    student_ID = session.get("student_id")  # Assuming 'student_id' is used in the session
+
+    # If the session does not have the student email or ID, handle the error (redirect to login or show message)
+    if not student_email or not student_ID:
+        flash("You need to be logged in to access this page", "error")
+        return redirect(url_for('studentView'))  # Redirect to the login page if no session data found
+
+    # Retrieve form data
+    roomType = request.form.get("roomType")
+    cleanliness = request.form.get("cleanliness")
+    roomGender = request.form.get("roomGender")
+    accommodations = request.form.get("accommodations")
+
+    # Debugging: Print form data
+    print(f"Form Attempt: {student_email} and {roomType} and {cleanliness} and {roomGender} and {accommodations}")
+
+    # Open database connection
+    conn = open_connection()
+    if conn:
+        cursor = conn.cursor()
+
+        # Check if the student has already submitted the form
+        sql_check = """
+            SELECT * FROM housingForm f
+            WHERE f.f_studentID = ?
+        """
+        cursor.execute(sql_check, (student_ID,))
+        existing_form = cursor.fetchone()
+
+        if existing_form:
+            # If form already exists, show an error message
+            flash("You've already completed the Housing Form", "error")
+            return redirect('/login/student')  # Redirect to student view or another appropriate page
+
+        # Get the current maximum f_formID
+        cursor.execute("SELECT MAX(f_formID) FROM housingForm")
+        max_formID = cursor.fetchone()[0]
+
+        # Generate the new f_formID
+        f_formID = max_formID + 1 if max_formID is not None else 1  # Default to 1 if no forms exist
+
+        print(f"Generated f_formID: {f_formID}")
+
+        # If no existing form, proceed with inserting the new form data into housingForm
+        sql_insert_housingForm = """
+            INSERT INTO housingForm (f_formID, f_studentID, f_status, f_accomodations, f_surveyID)
+            VALUES (?, ?, ?, ?, ?)
+        """
+        cursor.execute(sql_insert_housingForm, (f_formID, student_ID, 'F', accommodations, f_formID))
+        conn.commit()
+
+        # Now insert the data into the profileSurvey table using the f_formID as s_surveyID
+        sql_insert_profileSurvey = """
+            INSERT INTO profileSurvey (s_surveyID, s_prefRoomType, s_cleanliness, s_prefRoomGen)
+            VALUES (?, ?, ?, ?)
+        """
+        cursor.execute(sql_insert_profileSurvey, (f_formID, roomType, cleanliness, roomGender))
+        conn.commit()
+
+        # Close connection
+        conn.close()
+
+        # Show a success message after submitting the form
+        flash("Housing form submitted successfully!", "success")
+        return redirect(url_for('studentView'))  # Redirect to a page after form submission
+
+    else:
+        flash("Error connecting to the database", "error")
+        return redirect(url_for('studentView'))
+
+
+
+
+
 
 
 if __name__ == "__main__":

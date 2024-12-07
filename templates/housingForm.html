@@ -11,13 +11,37 @@
 <body>
     <div>
         <h1>Profile Survey</h1>
-        <p>Preferred room type</p>
-        <input placeholder="Preferred room type" />
-        <p>Cleanliness</p>
-        <input placeholder="Cleanliness" />
-        <p>Preferred roommate gender</p>
-        <input placeholder="roommate gender" />
+        <form method="POST" action="/studentView/form">
+            <p>Preferred room type</p>
+            <!-- <input placeholder="Preferred room type" /> -->
+            <select id="roomType" name="roomType" required>
+                <option value="1">Single</option>
+                <option value="2">Double</option>
+                <option value="3">Triple</option>
+                <option value="4">Quad</option>
+            </select>
+            <p>Cleanliness</p>
+            <select id="cleanliness" name="cleanliness" required>
+                <option value="Very Clean">Very Clean</option>
+                <option value="Somewhat Clean">Somewhat Clean</option>
+                <option value="Cleans After Themselves">Cleans After Themselves</option>
+                <option value="Does Not Matter">Does not Matter</option>
+            </select>
+            <!-- <input placeholder="Cleanliness" /> -->
+            <p>Preferred roommate gender</p>
+            <!-- <input placeholder="roommate gender" /> -->
+            <select id="roomGender" name="roomGender" required>
+                <option value="M">M</option>
+                <option value="F">F</option>
+                <option value="N">N</option>
+            </select>
+            <p>Accommodations</p>
+            <select id="accommodations" name="accommodations" required>
+                <option value="T">Yes</option>
+                <option value="F">No</option>
+            </select>
+            <button>Submit</button>
+        </form>
     </div>
-    <button>Submit</button>
 </body>
 </html>
