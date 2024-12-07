@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+
+    <!-- Make sure your Welcome.css is in the correct static folder -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/Welcome.css') }}">
+
+    <style>
+        body {
+            background-color: rgb(0, 40, 86);
+        }
+
+        .WelcomeContainer {
+            position: relative;
+            margin-top: 18%;
+        }
+
+        .WelcomeButtons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #headerText {
+            text-align: center;
+            font-size: 90px;
+            font-family: sans-serif;
+            color: white;
+            text-shadow: -3px -3px 0 rgb(218, 169, 0), 3px -3px 0 rgb(218, 169, 0), -3px 3px 0 rgb(218, 169, 0), 3px 3px 0 rgb(218, 169, 0);
+        }
+
+        #descText {
+            text-align: center;
+            font-size: 30px;
+            margin-top: -60px;
+            color: white;
+        }
+
+        #orWelcome {
+            color: white;
+            font-size: 20px;
+        }
+
+        .StudentButton, .EmployeeButton {
+            background-color: rgb(218, 169, 0);
+            border: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .StudentButton:hover, .EmployeeButton:hover {
+            background-color: rgb(163, 138, 0);
+        }
+    </style>
+
+    <script>
+        // Function to handle user type redirection
+        function handleUserTypeClick(buttonType) {
+            if (buttonType === "student") {
+                window.location.href = "/login/student"; // Redirect to student login page
+            }
+            if (buttonType === "employee") {
+                window.location.href = "/login/employee"; // Redirect to employee login page
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="WelcomeContainer">
+        <h1 id="headerText">Welcome!</h1>
+        <p id="descText">Are you a(n)...</p>
+        <div class="WelcomeButtons">
+            <!-- Buttons for student and employee -->
+            <button class="StudentButton" onclick="handleUserTypeClick('student')">Student</button>
+            <p id="orWelcome">or</p>
+            <button class="EmployeeButton" onclick="handleUserTypeClick('employee')">Employee</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
