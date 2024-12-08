@@ -15,6 +15,11 @@
         <div id="main">
             <h1>Your housing status:</h1>
             <p>{{ housing_status }}</p>
+
+            <!-- If the student is approved, show the "Select Room" button -->
+            {% if housing_status == 'You have submitted your housing form and it has been approved.' %}
+                <a href="{{ url_for('select_room') }}" class="btn btn-info">Select Room</a>
+            {% endif %}
         </div>
     </div>
 </body>

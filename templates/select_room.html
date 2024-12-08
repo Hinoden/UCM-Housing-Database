@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Room</title>
+</head>
+<body>
+    <div>
+        <h1>Select a Room</h1>
+        
+        <!-- Form to choose a room -->
+        <form method="POST">
+            <label for="room_id">Choose a Room:</label>
+            <select name="room_id" id="room_id">
+                {% for room in rooms %}
+                    <!-- Store both room_id and building_id in the value -->
+                    <option value="{{ room[0] }}:{{ room[1] }}">{{ room[0] }} (Building {{ room[1] }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="action" value="submit">Submit Room Selection</button>
+        </form>
+    </div>
+</body>
+</html>
