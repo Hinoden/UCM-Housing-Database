@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
 
-    <!-- Make sure your Welcome.css is in the correct static folder -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style/Welcome.css') }}">
 
     <style>
@@ -61,13 +60,12 @@
     </style>
 
     <script>
-        // Function to handle user type redirection
         function handleUserTypeClick(buttonType) {
             if (buttonType === "student") {
-                window.location.href = "/login/student"; // Redirect to student login page
+                window.location.href = "/login/student";
             }
             if (buttonType === "employee") {
-                window.location.href = "/login/employee"; // Redirect to employee login page
+                window.location.href = "/login/employee";
             }
         }
     </script>
@@ -79,7 +77,6 @@
         <h1 id="headerText">Welcome!</h1>
         <p id="descText">Are you a(n)...</p>
         <div class="WelcomeButtons">
-            <!-- Buttons for student and employee -->
             <button class="StudentButton" onclick="handleUserTypeClick('student')">Student</button>
             <p id="orWelcome">or</p>
             <button class="EmployeeButton" onclick="handleUserTypeClick('employee')">Employee</button>

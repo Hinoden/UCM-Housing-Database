@@ -4,18 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Approval</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #navbarTop {
+            background-color: rgb(0, 40, 86);
+            height: 150px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #navbarBot {
+            background-color: rgb(236, 235, 235);
+            height: 50px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #welcome {
+            font-size: 40px;
+            color: white;
+        }
+
+        #home {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #form {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #message {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #newEmp {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #logout {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+
+        }
+
+        #appContainer {
+            background-color: rgb(236, 235, 235);
+            margin: 40px;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #000000;
+            text-align: center;
+        }
+
+        .approveBtn {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        .rejectBtn {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="my-4">Application Approval</h1>
+    <div id="navbarTop">
+        <p id="welcome">Welcome {{ session.student_name }} to the Housing Admin Portal</p>
+    </div>
+    <div id="navbarBot">
+        <button id="home" onclick="window.location.href='/employee_view'">Home</button>
+        <form action="{{ url_for('application_approval') }}" method="GET">
+            <button type="submit" name="action" value="applications" id="form">Applications</button>
+        </form>
+        <form action="{{ url_for('employee_messages') }}" method="GET">
+            <button type="submit" name="action" value="messages" id="message">Messages</button>
+        </form>
+        <form action="{{ url_for('new_employee') }}" method="GET">
+            <button type="submit" name="action" value="new_employees" id="newEmp">New Employees</button>
+        </form>
+        <button id="logout" onclick="window.location.href='/logout'">Logout</button>
+    </div>
+    <br>
+    <br>
+    <div id="appContainer">
+        <h1>Application Approval</h1>
         
-        <!-- Button to go back to Employee View -->
-        <a href="{{ url_for('employee_view') }}" class="btn btn-primary mb-3">Go Back to Employee View</a>
-        
-        <table class="table table-bordered">
+        <table id="appTable">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Form ID</th>
                     <th>Student Name</th>
                     <th>Student ID</th>
@@ -27,23 +147,21 @@
             <tbody>
                 {% for application in applications %}
                     <tr>
-                        <td>{{ application[0] }}</td> <!-- Form ID -->
-                        <td>{{ application[5] }}</td> <!-- Student Name (from the joined table) -->
-                        <td>{{ application[1] }}</td> <!-- Assuming Form ID is in application[1] -->
-                        <td>{{ application[2] }}</td> <!-- Assuming Student ID is in application[2] -->
-                        <td>{{ application[4] }}</td> <!-- Accommodations (from the housingForm) -->
+                        <td>{{ application[0] }}</td>
+                        <td>{{ application[5] }}</td>
+                        <td>{{ application[1] }}</td>
+                        <td>{{ application[2] }}</td>
+                        <td>{{ application[4] }}</td>
                         <td>
-                            <!-- Form for Approving the Application -->
                             <form action="{{ url_for('application_approval') }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="form_id" value="{{ application[0] }}">
                                 <input type="hidden" name="action" value="approve">
-                                <button type="submit" class="btn btn-success">Approve</button>
+                                <button type="submit" class="approveBtn">Approve</button>
                             </form>
-                            <!-- Form for Rejecting the Application -->
                             <form action="{{ url_for('application_approval') }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="form_id" value="{{ application[0] }}">
                                 <input type="hidden" name="action" value="reject">
-                                <button type="submit" class="btn btn-danger">Reject</button>
+                                <button type="submit" class="rejectBtn">Reject</button>
                             </form>
                         </td>
                     </tr>

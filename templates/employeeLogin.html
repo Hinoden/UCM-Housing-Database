@@ -26,11 +26,13 @@
 
         #goBackEmpContainer {
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
         }
 
         #empLogin {
             margin-top: 30px;
+            background-color: rgb(0, 40, 86);
+            color: white;
         }
 
         #empHeader {
@@ -44,8 +46,6 @@
             font-weight: bold;
             color: rgb(0, 40, 86);
             text-align: left;
-            margin-left: 40px;
-            margin-top: -20px;
             font-size: 14px;
         }
 
@@ -60,14 +60,16 @@
             color: white;
             font-size: 20px;
             margin-top: 160px;
-            left: 33%;
-            text-align: left;
+            margin-left: -300px;
         }
 
         #goBackEmp {
             color: rgb(218, 169, 0);
             margin-top: 143px;
-            left: 33%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
         }
 
         .MuiButton-root {
@@ -86,13 +88,11 @@
 <body>
 
     <div>
-        <!-- Go Back Section -->
         <div id="goBackEmpContainer">
             <p id="whoopsEmp">Not an Employee?</p>
             <button id="goBackEmp" onclick="window.location.href='/'">Go Back</button>
         </div>
 
-        <!-- Login Section -->
         <div class="EmpLoginContainer">
             <form method="POST" action="/login/employee">
                 <h1 id="empHeader">Employee Portal</h1>
@@ -103,7 +103,6 @@
                 <button id="empLogin" type="submit">Sign In</button>
             </form>
         
-            <!-- Display flash messages here -->
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             <ul>

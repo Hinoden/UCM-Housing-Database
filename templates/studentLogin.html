@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login</title>
 
-    <!-- Internal CSS -->
     <style>
         body {
             background-color: rgb(0, 40, 86);
@@ -88,6 +87,7 @@
             border: none;
             cursor: pointer;
             font-size: 18px;
+            margin-top: 139px;
         }
 
         .error-message {
@@ -103,24 +103,21 @@
 </head>
 
 <body>
-    <!-- Go Back Button -->
     <div id="goBackStuContainer">
         <p id="whoopsStu">Not a Student?</p>
         <button id="goBackStu" onclick="window.location.href='/'">Go Back</button>
     </div>
 
-    <!-- Login Section -->
     <div class="LoginContainer">
         <form method="POST" action="/login/student">
             <h1 id="stuHeader">Student Portal</h1>
             <p id="stuUsernameLabel">UCM Email (Required)</p>
             <input id="username" name="student_email" type="text" required placeholder="Enter your UCMNetID or M.ID" />
             <p id="stuPasswordLabel">Password (Required)</p>
-            <input id="password" name="student_password" type="password" required placeholder="Enter your password" />
+            <input id="password" name="student_password" type="password" required placeholder="Enter your password" /> <br>
             <button type="submit" id="stuLogin">Sign In</button>
             <p id="loginError" class="error-message"></p>
         </form>
-        <!-- Display flash messages here -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul>
@@ -136,13 +133,11 @@
 
     <p id="orStudent">OR</p>
 
-<!-- Sign Up Section -->
 <div class="SignUpContainer">
     <form method="POST" action="/signup/student">
         <h1 id="stuHeader">Sign Up</h1>
         <p id="stuNameLabel">First Name (Required)</p>
         <input id="fullName" type="text" name="student_name" required placeholder="Enter your first name" />
-        <!-- Gender Dropdown -->
         <p id="stuGenderLabel">Gender (Required)</p>
         <select id="gender" name="gender" required>
             <option value="M">M</option>
@@ -157,7 +152,7 @@
         
         <p id="stuYear">Year (Required)</p>
         <input id="year" name="student_year" type="year" required placeholder="Enter your year" />    
-        
+        <br>
         <button id="stuSignUp">Sign Up</button>
     </form>
     <p id="signupError" class="error-message"></p>

@@ -4,40 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #navbarTop {
+            background-color: rgb(0, 40, 86);
+            height: 150px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #navbarBot {
+            background-color: rgb(236, 235, 235);
+            height: 50px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #welcome {
+            font-size: 40px;
+            color: white;
+        }
+
+        #home {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #form {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #contact {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #logout {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #contactPage {
+            background-color: rgb(236, 235, 235);
+            margin: 40px;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #employee {
+            width: 300px;
+        }
+
+        #submit {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Contact Us</h1>
+    <div>
+        <div id="navbarTop">
+            <p id="welcome">Welcome {{ session.student_name }} to the Housing Portal</p>
+        </div>
+        <div id="navbarBot">
+            <button id="home" onclick="window.location.href='/studentView'">Home</button>
+            <button id="form" onclick="window.location.href='/studentView/form'">Housing Form</button>
+            <button id="contact" onclick="window.location.href='/contact'">Go to Messages</button>
+            <button id="logout" onclick="window.location.href='/logout'">Logout</button>
+        </div>
+        <br>
+        <br>
+
+        <div id="contactPage">
+            <h1>Contact Us</h1>
     
-    <!-- Flash messages (optional, for success/error feedback) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-                {% for category, message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
 
-    <!-- Contact Form -->
-    <form method="POST" action="/contact">
-        <label for="message">Reason for contact:</label><br>
-        <textarea name="message" id="message" rows="4" cols="50" required></textarea><br><br>
+            <form method="POST" action="/contact">
+                <label for="message">Reason for contact:</label><br>
+                <textarea name="message" id="message" rows="4" cols="50" required></textarea><br><br>
 
-        <!-- Dropdown to select employee -->
-        <label for="employee">Select Employee:</label><br>
-        <select name="employee" id="employee" required>
-            <option value="" disabled selected>Select an employee</option>
-            {% if employees %}
-                {% for employee in employees %}
-                    <option value="{{ employee[0] }}">{{ employee[1] }} (ID: {{ employee[0] }})</option>
-                {% endfor %}
-            {% else %}
-                <option value="">No employees available</option>
-            {% endif %}
-        </select><br><br>
+                <label for="employee">Select Employee:</label><br>
+                <select name="employee" id="employee" required>
+                    <option value="" disabled selected>Select an employee</option>
+                    {% if employees %}
+                        {% for employee in employees %}
+                            <option value="{{ employee[0] }}">{{ employee[1] }} (ID: {{ employee[0] }})</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="">No employees available</option>
+                    {% endif %}
+                </select><br><br>
 
-        <button type="submit">Submit</button>
-    </form>
+                <button type="submit" id="submit">Submit</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

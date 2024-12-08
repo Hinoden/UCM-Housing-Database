@@ -48,7 +48,7 @@ def delMessage():
 @app.route("/logout")
 def logout():
     session.clear()
-    flash("You have been logged out.", "success")
+    # flash("You have been logged out.", "success")
     return redirect(url_for('home'))
 
 
@@ -472,7 +472,7 @@ def contact():
                 conn.commit()
 
                 flash("Your contact has been submitted successfully!", "success")
-                return redirect(url_for('studentView'))  # Redirect after successful submission
+                return redirect(url_for('contact'))  # Redirect after successful submission
 
             except sqlite3.OperationalError as e:
                 print(f"Database error: {e}")

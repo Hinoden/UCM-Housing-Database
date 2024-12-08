@@ -5,32 +5,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Employee</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #navbarTop {
+            background-color: rgb(0, 40, 86);
+            height: 150px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #navbarBot {
+            background-color: rgb(236, 235, 235);
+            height: 50px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #welcome {
+            font-size: 40px;
+            color: white;
+        }
+
+        #home {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #form {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #message {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #newEmp {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+
+        #logout {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+
+        }
+
+        #newEmpContainer {
+            background-color: rgb(236, 235, 235);
+            margin: 40px;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #createEmp {
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Create New Employee</h1>
-    <!-- Button to go back to Employee View -->
-    <a href="{{ url_for('employee_view') }}" class="btn btn-primary mb-3">Go Back to Employee View</a>
-    <!-- Form action should match the Flask route -->
-    <form action="/employee/creation" method="POST">
-        <!-- Employee Name -->
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="employee_name" required>
-        <br><br>
+    <div id="navbarTop">
+        <p id="welcome">Welcome {{ session.student_name }} to the Housing Admin Portal</p>
+    </div>
+    <div id="navbarBot">
+        <button id="home" onclick="window.location.href='/employee_view'">Home</button>
+        <form action="{{ url_for('application_approval') }}" method="GET">
+            <button type="submit" name="action" value="applications" id="form">Applications</button>
+        </form>
+        <form action="{{ url_for('employee_messages') }}" method="GET">
+            <button type="submit" name="action" value="messages" id="message">Messages</button>
+        </form>
+        <form action="{{ url_for('new_employee') }}" method="GET">
+            <button type="submit" name="action" value="new_employees" id="newEmp">New Employees</button>
+        </form>
+        <button id="logout" onclick="window.location.href='/logout'">Logout</button>
+    </div>
+    <div id="newEmpContainer">
+        <h1>Create New Employee</h1>
+        <form action="/employee/creation" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="employee_name" required>
+            <br><br>
 
-        <!-- Employee Email -->
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="employee_email" required>
-        <br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="employee_email" required>
+            <br><br>
 
-        <!-- Employee Password -->
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="employee_password" required>
-        <br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="employee_password" required>
+            <br><br>
 
-        <!-- Submit Button -->
-        <button type="submit" name="action" value="new_employees">Create Employee</button>
-    </form>
+            <button type="submit" name="action" value="new_employees" id="createEmp">Create Employee</button>
+        </form>
+    </div>
 </body>
 
 </html>
