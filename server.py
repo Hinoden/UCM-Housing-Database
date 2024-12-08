@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import random
 from sqlite3 import Error
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -23,20 +24,13 @@ def open_connection():
 def home():
     return render_template('welcome.html')
 
-@app.route("/employee/view", endpoint='employee_view')
+@app.route("/employee_view", endpoint='employee_view')
 def employee_view():
     return render_template("employeeView.html")
 
-@app.route('/studentView')
-def studView():
-    return render_template('studentView.html')
 @app.route('/studentView/form')
 def studentView():
     return render_template('housingForm.html')
-
-@app.route("/messages", methods=['GET'])
-def messages():
-    return render_template('messages.html')
 
 @app.route("/applications", methods=['GET'])
 def applications():
@@ -46,6 +40,10 @@ def applications():
 def new_employee():
     # Your code for rendering the employee creation form or handling POST request
     return render_template('employee_creation_form.html')
+
+@app.route("/employee/delete_message", methods = ['GET', 'POST'])
+def delMessage():
+    return render_template('deleteMessage.html')
     
 @app.route("/logout")
 def logout():
@@ -106,27 +104,21 @@ def student_dash():
 
         # Check if the student has already submitted the housing form
         sql_check = """
-            SELECT * FROM housingForm
-            WHERE f_studentID = ?
+            SELECT f_status FROM housingForm WHERE f_studentID = ?
         """
         cursor.execute(sql_check, (student_ID,))
-        existing_form = cursor.fetchone()
+        status = cursor.fetchone()
         
-        if existing_form:
-            # Query to fetch the f_status for the given student
-            sql_housing_check = """
-                SELECT f_status FROM housingForm
-                WHERE f_studentID = ?
-            """
-            cursor.execute(sql_housing_check, (student_ID,))
-            status = cursor.fetchone()
+        if status:
             stat = status[0]
             if stat == 'F':
                 housing_status = "You have submitted your housing form, and it is still being processed."
             elif stat == 'A':
                 housing_status = "You have submitted your housing form and it has been approved."
-            else:
+            elif stat == 'R':
                 housing_status = "You have submitted your housing form and it has been rejected."
+            else:
+                housing_status = "Unknown status."
         else:
             housing_status = "You have not yet submitted your housing form."
 
@@ -138,6 +130,7 @@ def student_dash():
     else:
         flash("Error connecting to the database", "error")
         return redirect(url_for('student_login'))
+
 
 
 @app.route("/signup/student", methods=['GET', 'POST'])
@@ -419,7 +412,7 @@ def select_room():
             update_housing_status(student_id, room_id, building_id)
 
             # Redirect to show the updated page (confirmation processed)
-            return redirect(url_for('studentView'))
+            return render_template('select_room.html')
 
     return render_template('select_room.html', rooms=available_rooms)
 
@@ -444,7 +437,6 @@ def update_housing_status(student_id, room_id, building_id):
     conn.commit()
     conn.close()
 
-
 def get_available_rooms():
     conn = open_connection()
     cursor = conn.cursor()
@@ -453,9 +445,155 @@ def get_available_rooms():
     conn.close()
     return available_rooms
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # Handle form submission
+        message = request.form.get('message')
+        employee_id = request.form.get('employee')  # Selected employee ID
+        
+        # Ensure both the message and selected employee are provided
+        if not message or not employee_id:
+            flash("Please provide both a message and select an employee.", "error")
+            return redirect(url_for('contact'))  # Redirect back to the contact page
 
+        # Insert the message and selected employee ID into the database (or handle as needed)
+        conn = open_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                # Insert into the contact table (example query)
+                sql_insert_contact = """
+                    INSERT INTO contact (c_contactDateTime, c_reason, c_studentID, c_employeeID)
+                    VALUES (?, ?, ?, ?)
+                """
+                contact_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                cursor.execute(sql_insert_contact, (contact_datetime, message, session.get('student_id'), employee_id))
+                conn.commit()
 
+                flash("Your contact has been submitted successfully!", "success")
+                return redirect(url_for('studentView'))  # Redirect after successful submission
 
+            except sqlite3.OperationalError as e:
+                print(f"Database error: {e}")
+                flash("There was an issue with the database. Please try again later.", "error")
+                return redirect(url_for('contact'))  # If there’s an error with database, go back to contact form
+            finally:
+                conn.close()
+
+        else:
+            flash("Error connecting to the database", "error")
+            return redirect(url_for('contact'))  # If the database connection fails, redirect to contact form
+
+    else:
+        # Handle GET request - render contact form with employee options
+        conn = open_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                # Query to fetch all employees' IDs and names
+                cursor.execute("SELECT e_employeeID, e_name FROM employee")
+                employees = cursor.fetchall()  # Fetch all employee records
+
+                # Pass the employees data to the template
+                return render_template('contact.html', employees=employees)
+
+            except sqlite3.OperationalError as e:
+                print(f"Database error: {e}")
+                flash("There was an issue fetching employee data. Please try again later.", "error")
+                return render_template('contact.html', employees=[])  # Return empty employees list if query fails
+            finally:
+                conn.close()
+
+        else:
+            flash("Error connecting to the database", "error")
+            return render_template('contact.html', employees=[]) 
+        
+@app.route('/messages', methods=['GET', 'POST'])
+def employee_messages():
+    # Assuming the employee's ID is stored in session (after login)
+    employee_id = session.get('employee_id')  # Get the logged-in employee's ID from session
+
+    if not employee_id:
+        flash("You must be logged in as an employee to view messages.", "error")
+        return redirect(url_for('employee_login'))  # Redirect to employee login page if not logged in
+
+    # Handle GET request - show messages for the logged-in employee
+    conn = open_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            # Join the 'contact' table with the 'student' table to fetch the student's name (s_name)
+            cursor.execute("""
+                SELECT c_contactDateTime, c_reason, c_studentID, s.s_name
+                FROM contact c
+                JOIN student s ON c.c_studentID = s.s_studentID
+                WHERE c.c_employeeID = ?
+            """, (employee_id,))
+            messages = cursor.fetchall()  # Fetch all messages for the logged-in employee
+
+            return render_template('empMessages.html', messages=messages)
+
+        except sqlite3.OperationalError as e:
+            print(f"Database error: {e}")
+            flash("There was an issue fetching your messages. Please try again later.", "error")
+            return render_template('empMessages.html', messages=[])
+        finally:
+            conn.close()
+
+    else:
+        flash("Error connecting to the database", "error")
+        return render_template('empMessages.html', messages=[])
+
+@app.route('/delete_message/<int:student_id>', methods=['POST'])
+def delete_message(student_id):
+    employee_id = session.get('employee_id')  # Get the logged-in employee's ID from session
+    print(f"Deleting message for student with ID: {student_id}")  # Debugging: print the student_id
+
+    if not employee_id:
+        flash("You must be logged in as an employee to delete messages.", "error")
+        return redirect(url_for('employee_login'))  # Redirect if not logged in
+
+    # Handle the deletion of the message
+    conn = open_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            # Ensure that the message belongs to the logged-in employee
+            print(f"Executing SELECT query for student_id: {student_id}")  # Debugging: print query status
+            cursor.execute("SELECT c_employeeID FROM contact WHERE c_studentID = ?", (student_id,))
+            result = cursor.fetchone()
+            
+            if result:
+                print(f"Message result: {result}")  # Debugging: print query result
+                if result[0] == employee_id:  # Only delete if the employee ID matches
+                    print("Employee authorized. Deleting message.")  # Debugging: show when deletion occurs
+                    cursor.execute("DELETE FROM contact WHERE c_studentID = ?", (student_id,))
+                    conn.commit()
+                    flash("Message deleted successfully.", "success")
+                else:
+                    flash("You are not authorized to delete this message.", "error")
+            else:
+                flash("Message not found.", "error")  # Handle case where student_id doesn't exist
+
+            return redirect(url_for('employee_messages'))  # Redirect back to the employee messages page
+
+        except sqlite3.OperationalError as e:
+            print(f"Database error: {e}")  # Print the exact database error
+            flash("There was an issue deleting the message. Please try again later.", "error")
+            return redirect(url_for('employee_messages'))
+
+        except Exception as e:
+            print(f"Unexpected error: {e}")  # Print any unexpected error
+            flash("Unexpected error occurred while deleting the message.", "error")
+            return redirect(url_for('employee_messages'))
+
+        finally:
+            conn.close()
+
+    else:
+        flash("Error connecting to the database", "error")
+        return redirect(url_for('employee_messages'))
 
 
 if __name__ == "__main__":

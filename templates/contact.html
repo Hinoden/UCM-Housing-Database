@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+</head>
+<body>
+    <h1>Contact Us</h1>
+    
+    <!-- Flash messages (optional, for success/error feedback) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Contact Form -->
+    <form method="POST" action="/contact">
+        <label for="message">Reason for contact:</label><br>
+        <textarea name="message" id="message" rows="4" cols="50" required></textarea><br><br>
+
+        <!-- Dropdown to select employee -->
+        <label for="employee">Select Employee:</label><br>
+        <select name="employee" id="employee" required>
+            <option value="" disabled selected>Select an employee</option>
+            {% if employees %}
+                {% for employee in employees %}
+                    <option value="{{ employee[0] }}">{{ employee[1] }} (ID: {{ employee[0] }})</option>
+                {% endfor %}
+            {% else %}
+                <option value="">No employees available</option>
+            {% endif %}
+        </select><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
