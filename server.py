@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
+import random
 from sqlite3 import Error
 
 app = Flask(__name__)
@@ -26,6 +27,9 @@ def home():
 def employee_view():
     return render_template("employeeView.html")
 
+@app.route('/studentView')
+def studView():
+    return render_template('studentView.html')
 @app.route('/studentView/form')
 def studentView():
     return render_template('housingForm.html')
@@ -393,6 +397,64 @@ def application_approval():
     else:
         flash("Error connecting to the database", "error")
         return redirect(url_for('employee_view'))
+    
+@app.route('/select-room', methods=['GET', 'POST'])
+def select_room():
+    student_id = session['student_id']  # Assuming the student ID is stored in the session
+    
+    # Get available rooms for the student
+    available_rooms = get_available_rooms()
+
+    if request.method == 'POST':
+        # Get the combined room_id:building_id value
+        room_info = request.form.get('room_id')
+        
+        if room_info:
+            # Split the combined value into room_id and building_id
+            room_id, building_id = room_info.split(':')
+            
+            # Assign the selected room to the student
+            assign_room_to_student(room_id)
+            # Update housing status to 'assigned'
+            update_housing_status(student_id, room_id, building_id)
+
+            # Redirect to show the updated page (confirmation processed)
+            return redirect(url_for('studentView'))
+
+    return render_template('select_room.html', rooms=available_rooms)
+
+
+def assign_room_to_student(room_id):
+    conn = open_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE room SET r_occupied = 'T' WHERE r_roomID = ?
+    """, (room_id,))  # room_id needs to be passed as a tuple
+    conn.commit()
+    conn.close()
+
+def update_housing_status(student_id, room_id, building_id):
+    conn = open_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE student 
+        SET s_buildingID = ?, s_roomID = ? 
+        WHERE s_studentID = ?
+    """, (building_id, room_id, student_id))  # Pass building_id, room_id, and student_id
+    conn.commit()
+    conn.close()
+
+
+def get_available_rooms():
+    conn = open_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT r_roomID, r_buildingID FROM room WHERE r_occupied = 'F'")  # 'F' means unoccupied
+    available_rooms = cursor.fetchall()
+    conn.close()
+    return available_rooms
+
+
+
 
 
 

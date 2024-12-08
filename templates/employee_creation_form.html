@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Employee</title>
 </head>
+
 <body>
     <h1>Create New Employee</h1>
-
+    <!-- Button to go back to Employee View -->
+    <a href="{{ url_for('employee_view') }}" class="btn btn-primary mb-3">Go Back to Employee View</a>
     <!-- Form action should match the Flask route -->
     <form action="/employee/creation" method="POST">
         <!-- Employee Name -->
@@ -29,4 +32,5 @@
         <button type="submit" name="action" value="new_employees">Create Employee</button>
     </form>
 </body>
+
 </html>
