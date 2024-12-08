@@ -20,6 +20,10 @@
             {% if housing_status == 'You have submitted your housing form and it has been approved.' %}
                 <a href="{{ url_for('select_room') }}" class="btn btn-info">Select Room</a>
             {% endif %}
+
+            <!-- Button to go to the message page -->
+            <br><br>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">Go to Messages</a>
         </div>
     </div>
 </body>

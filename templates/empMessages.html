@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+</head>
+
+<body>
+    <h1>Employee Messages</h1>
+
+    <!-- Button to go back to Employee View -->
+    <a href="{{ url_for('employee_view') }}" class="btn btn-primary mb-3">Go Back to Employee View</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul>
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Display Messages -->
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>
+            <p><strong>Student Name:</strong> {{ message[3] }}</p> <!-- Displaying student name -->
+            <p><strong>Student ID:</strong> {{ message[2] }}</p> <!-- Displaying student ID -->
+            <p><strong>Message:</strong> {{ message[1] }}</p>
+            <p><strong>Date:</strong> {{ message[0] }}</p>
+            <!-- Delete Button -->
+            <form method="POST" action="{{ url_for('delete_message', student_id=message[2]) }}" style="display:inline;">
+                <button type="submit"
+                    onclick="return confirm('Are you sure you want to delete this message?');">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No messages found.</p>
+    {% endif %}
+
+</body>
+
+</html>
