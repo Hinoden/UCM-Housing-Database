@@ -6,10 +6,8 @@ app = Flask(__name__)
 
 app.secret_key = 'Sova Sona Da Phish'
 
-# Database configuration
 StarRez = "housing.db"
 
-# Function to open database connection
 def open_connection():
     conn = None
     try:
@@ -23,12 +21,27 @@ def open_connection():
 @app.route("/")
 def home():
     return render_template('welcome.html')
-@app.route("/employee/view", endpoint='employee_view')  # Explicitly define endpoint
+
+@app.route("/employee/view", endpoint='employee_view')
 def employee_view():
     return render_template("employeeView.html")
+
 @app.route('/studentView/form')
 def studentView():
     return render_template('housingForm.html')
+
+@app.route("/messages", methods=['GET'])
+def messages():
+    return render_template('messages.html')
+
+@app.route("/applications", methods=['GET'])
+def applications():
+    return render_template('applications.html')
+
+@app.route("/employee/create", methods=['GET', 'POST'])
+def new_employee():
+    # Your code for rendering the employee creation form or handling POST request
+    return render_template('employee_creation_form.html')
     
 @app.route("/logout")
 def logout():
@@ -173,37 +186,6 @@ def student_signup():
 
     return render_template('studentSignup.html')  # Render signup page on GET request
 
-@app.route("/login/employee", methods=['GET', 'POST'])
-def employee_login():
-    if request.method == 'POST':
-        employee_email = request.form.get('employee_email')
-        employee_password = request.form.get('employee_password')
-        print(f"Login Attempt: With {employee_email} and {employee_password}")
-
-        conn = open_connection()
-        if conn:
-            cursor = conn.cursor()
-            sql = "SELECT * FROM employee WHERE e_email = ? AND e_password = ?"
-            cursor.execute(sql, (employee_email, employee_password))
-            user = cursor.fetchone()
-            conn.close()
-
-            if user:
-                # Set session variables upon successful login
-                session['employee_id'] = user[0]  # Assuming the first column is employee ID
-                session['employee_name'] = user[1]
-                session['employee_email'] = user[2]  # Assuming the email is in the third column
-                print(f'Login successful')
-
-                # Redirect to the employee view page
-                return redirect(url_for('employee_view'))  # This should match the route function name 'employee_view'
-            else:
-                flash("Invalid email or password", "error")  # Flash error message if login fails
-        else:
-            flash("Error connecting to database", "error")
-    
-    return render_template("employeeLogin.html")
-
 @app.route("/studentView/form", methods=['GET', 'POST'])
 def submitForm():
     # Retrieve session data
@@ -277,6 +259,88 @@ def submitForm():
     else:
         flash("Error connecting to the database", "error")
         return redirect(url_for('studentView'))
+
+@app.route("/login/employee", methods=['GET', 'POST'])
+def employee_login():
+    if request.method == 'POST':
+        employee_email = request.form.get('employee_email')
+        employee_password = request.form.get('employee_password')
+        print(f"Login Attempt: With {employee_email} and {employee_password}")
+
+        conn = open_connection()
+        if conn:
+            cursor = conn.cursor()
+            sql = "SELECT * FROM employee WHERE e_email = ? AND e_password = ?"
+            cursor.execute(sql, (employee_email, employee_password))
+            user = cursor.fetchone()
+            conn.close()
+
+            if user:
+                # Set session variables upon successful login
+                session['employee_id'] = user[0]  # Assuming the first column is employee ID
+                session['employee_name'] = user[1]
+                session['employee_email'] = user[2]  # Assuming the email is in the third column
+                print(f'Login successful')
+
+                # Redirect to the employee view page
+                return redirect(url_for('employee_view'))  # This should match the route function name 'employee_view'
+            else:
+                flash("Invalid email or password", "error")  # Flash error message if login fails
+        else:
+            flash("Error connecting to database", "error")
+    
+    return render_template("employeeLogin.html")
+
+@app.route("/employee/creation", methods=['GET', 'POST'])
+def employee_create():
+    # Debugging print to check if the route is hit
+    print("Employee create route hit!")
+    
+    if request.method == 'POST':
+        # Debugging print to check if the POST method is received
+        print("POST method received")
+        
+        # Get the form data
+        employee_name = request.form.get('employee_name')
+        employee_email = request.form.get('employee_email')
+        employee_password = request.form.get('employee_password')
+
+        # Debug: Print the received data
+        print(f"Received data: Name: {employee_name}, Email: {employee_email}, Password: {employee_password}")
+
+        # Assuming you have a function to open the database connection and insert data
+        conn = open_connection()  # Make sure this function works
+        if conn:
+            try:
+                cursor = conn.cursor()
+
+                # Generate a new employee ID (this assumes auto-incrementing IDs in the DB)
+                cursor.execute("SELECT MAX(e_employeeID) FROM employee")
+                max_id = cursor.fetchone()[0]
+                new_employee_id = max_id + 1 if max_id is not None else 1  # Default to 1 if no employees exist
+
+                # Insert new employee into the database
+                sql_insert = """
+                    INSERT INTO employee (e_employeeID, e_name, e_email, e_password)
+                    VALUES (?, ?, ?, ?)
+                """
+                cursor.execute(sql_insert, (new_employee_id, employee_name, employee_email, employee_password))
+                conn.commit()
+
+                # Success message
+                flash(f"Employee {employee_name} created successfully!", "success")
+                return redirect(url_for('employee_view'))  # Redirect to employee view or another page
+
+            except Exception as e:
+                print(f"Error occurred: {e}")
+                flash("An error occurred while creating the employee. Please try again.", "error")
+            finally:
+                conn.close()
+        else:
+            flash("Error connecting to the database", "error")
+        
+    return render_template('employee_creation_form.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

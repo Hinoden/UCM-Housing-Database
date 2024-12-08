@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Employee</title>
+</head>
+<body>
+    <h1>Create New Employee</h1>
+
+    <!-- Form action should match the Flask route -->
+    <form action="/employee/creation" method="POST">
+        <!-- Employee Name -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="employee_name" required>
+        <br><br>
+
+        <!-- Employee Email -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="employee_email" required>
+        <br><br>
+
+        <!-- Employee Password -->
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="employee_password" required>
+        <br><br>
+
+        <!-- Submit Button -->
+        <button type="submit" name="action" value="new_employees">Create Employee</button>
+    </form>
+</body>
+</html>
