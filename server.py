@@ -341,6 +341,58 @@ def employee_create():
         
     return render_template('employee_creation_form.html')
 
+@app.route("/employee/application-approval", methods=['GET', 'POST'])
+def application_approval():
+    # Open a connection to the database
+    conn = open_connection()
+    if conn:
+        cursor = conn.cursor()
+
+        if request.method == 'POST':
+            # Handle form submission for approving or rejecting applications
+            action = request.form.get('action')  # 'approve' or 'reject'
+            form_id = request.form.get('form_id')  # The form ID to update
+
+            if action == 'approve':
+                # Update the f_status to 'A' for approved
+                sql_update = "UPDATE housingForm SET f_status = 'A' WHERE f_formID = ?"
+                cursor.execute(sql_update, (form_id,))
+                conn.commit()
+                flash(f"Application {form_id} approved!", "success")
+
+            elif action == 'reject':
+                # Update the f_status to 'R' for rejected
+                sql_update = "UPDATE housingForm SET f_status = 'R' WHERE f_formID = ?"
+                cursor.execute(sql_update, (form_id,))
+                conn.commit()
+                flash(f"Application {form_id} rejected.", "error")
+
+            # Redirect to the same page after updating the status
+            return redirect(url_for('application_approval'))
+
+        else:
+            # Query for all housing forms with f_status 'F' and join with student table to get the student name
+            sql_query = """
+                SELECT hf.*, s.s_name
+                FROM housingForm hf
+                JOIN student s ON hf.f_studentID = s.s_studentID
+                WHERE hf.f_status = 'F'
+            """
+            cursor.execute(sql_query)
+            applications = cursor.fetchall()  # Fetch all records
+
+            # Debugging: Print applications to check the result
+            print(f"Applications with f_status = 'F': {applications}")
+
+            conn.close()  # Close the connection
+
+            # Pass the applications data to the template
+            return render_template("applications.html", applications=applications)
+    else:
+        flash("Error connecting to the database", "error")
+        return redirect(url_for('employee_view'))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
