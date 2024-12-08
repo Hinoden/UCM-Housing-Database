@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Approval</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Application Approval</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Form ID</th>
+                    <th>Student Name</th> <!-- Displaying the student name -->
+                    <th>Student ID</th>
+                    <th>Accommodations</th>
+                    <th>Survey ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application[0] }}</td> <!-- Form ID -->
+                        <td>{{ application[5] }}</td> <!-- Student Name (from the joined table) -->
+                        <td>{{ application[1] }}</td> <!-- Assuming Form ID is in application[1] -->
+                        <td>{{ application[2] }}</td> <!-- Assuming Student ID is in application[2] -->
+                        <td>{{ application[4] }}</td> <!-- Accommodations (from the housingForm) -->
+                        <td>
+                            <!-- Form for Approving the Application -->
+                            <form action="{{ url_for('application_approval') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="form_id" value="{{ application[0] }}">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
+                            <!-- Form for Rejecting the Application -->
+                            <form action="{{ url_for('application_approval') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="form_id" value="{{ application[0] }}">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">No applications found with status 'F'.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
