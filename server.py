@@ -221,7 +221,7 @@ def submitForm():
         if existing_form:
             # If form already exists, show an error message
             flash("You've already completed the Housing Form", "error")
-            return redirect('/login/student')  # Redirect to student view or another appropriate page
+            return redirect('/studentView')  # Redirect to student view or another appropriate page
 
         # Get the current maximum f_formID
         cursor.execute("SELECT MAX(f_formID) FROM housingForm")
